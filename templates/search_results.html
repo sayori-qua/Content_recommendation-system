@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Заголовок -->
+  <h3 class="mb-4">Search results for: <span class="text-primary">"{{ query }}"</span></h3>
+
+{% if results %}
+<div class="row g-4">
+  {% for product in results %}
+  <div class="col-md-3">
+    <div class="card h-100 shadow-sm product-card">
+      <!-- Изображение -->
+      {% if product.dataset == 'Electro' %}
+        <a href="{{ url_for('product_page_electro', product_id=product.product_id) }}">
+      {% else %}
+        <a href="{{ url_for('product_page_uk', product_id=product.product_id) }}">
+      {% endif %}
+        <img src="{{ product.img_link }}" class="card-img-top p-3"
+             alt="{{ product.product_name }}" style="height: 220px; object-fit: contain;">
+      </a>
+
+      <!-- Контент -->
+      <div class="card-body d-flex flex-column">
+        <h6 class="card-title mb-2">
+          {% if product.dataset == 'Electro' %}
+            <a href="{{ url_for('product_page_electro', product_id=product.product_id) }}"
+          {% else %}
+            <a href="{{ url_for('product_page_uk', product_id=product.product_id) }}"
+          {% endif %}
+             class="text-decoration-none text-dark">{{ product.product_name }}</a>
+        </h6>
+
+        <!-- Цена -->
+        {% if product.price and product.price != 'N/A' %}
+          <p class="text-danger fw-bold mb-2">£{{ product.price }}</p>
+        {% else %}
+          <p class="text-muted small">Price not available</p>
+        {% endif %}
+
+        <!-- Кнопка Add to Cart -->
+        <a href="{{ url_for('add_to_cart', dataset=product.dataset, product_id=product.product_id) }}"
+           class="btn btn-amazon mt-auto">Add to Cart</a>
+      </div>
+     </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+  <p class="text-muted">No products found matching your search.</p>
+  <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">Back to Home</a>
+{% endif %}
+</div>
+{% endblock %}

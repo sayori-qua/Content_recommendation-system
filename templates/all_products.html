@@ -1,0 +1,21 @@
+<div class="row g-4">
+  {% for product in products %}
+    <div class="col-md-3">
+      <div class="card product-card">
+        <a href="{{ url_for('product_page_' + dataset.lower(), product_id=product[0]) }}">
+         <img src="{{ product[2] if product[2] else 'https://via.placeholder.com/220x220?text=No+Image' }}"
+           class="card-img-top product-img"
+           alt="{{ product[1] }}"
+           onerror="this.src='https://via.placeholder.com/220x220?text=No+Image'">
+        </a>
+        <div class="card-body text-center">
+          <h5 class="product-title">{{ product[1][:80] }}...</h5>
+          <p class="product-price">{{ product[3] }}</p>
+          <a href="{{ url_for('product_page_' + dataset.lower(), product_id=product[0]) }}" class="btn btn-amazon w-100 mt-2">
+            View Product
+          </a>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>

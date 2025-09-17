@@ -1,0 +1,90 @@
+services:
+  recommender-app:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      db1:
+        condition: service_healthy
+      db2:
+        condition: service_healthy
+    environment:
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+    networks:
+      - recommender-net
+    restart: unless-stopped
+
+  elasticsearch:
+    image: elasticsearch:7.17.18 #image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - recommender-net
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9200 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+    restart: unless-stopped
+  db1:
+    image: postgres:15
+    container_name: postgres1
+    environment:
+      POSTGRES_DB: electronics_amazon
+      POSTGRES_USER: sayori_qua
+      POSTGRES_PASSWORD: sayori_qua78
+    ports:
+      - "5433:5432" # на хосте: 5433 в контейнере: 5432
+    volumes:
+      - pgdata1:/var/lib/postgresql/data
+      - ./init_electronics.sql:/docker-entrypoint-initdb.d/init_electronics_data.sql
+      - ./dataset/amazon.csv:/docker-entrypoint-initdb.d/amazon.csv
+    networks:
+      - recommender-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U sayori_qua -d electronics_amazon" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    restart: unless-stopped
+  db2:
+    image: postgres:15 #15 версия
+    container_name: postgres2
+    environment:
+      POSTGRES_DB: uk_amazon
+      POSTGRES_USER: sayori_qua
+      POSTGRES_PASSWORD: sayori_qua78
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata2:/var/lib/postgresql/data
+      - ./init_uk.sql:/docker-entrypoint-initdb.d/init_uk_data.sql
+      - ./dataset/amz_uk_processed_data.csv:/docker-entrypoint-initdb.d/amz_uk_processed_data.csv
+    networks:
+      - recommender-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U sayori_qua -d uk_amazon" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    restart: unless-stopped
+#нужна одна сеть чтобы использовать контейнер с elastic search в приложении
+#сохранение данных вне контейнера
+volumes:
+  esdata:
+  pgdata1:
+  pgdata2:
+
+networks:
+  recommender-net:

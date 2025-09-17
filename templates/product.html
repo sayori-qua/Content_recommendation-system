@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}{{ name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <!-- Фото товара -->
+  <div class="col-md-5 text-center">
+    <img src="{{ image if image else 'https://via.placeholder.com/400x400?text=No+Image' }}"
+         alt="{{ name }}"
+         class="img-fluid rounded border"
+         style="max-height: 400px; object-fit: contain; background: #fff; padding: 10px;"
+         onerror="this.src='https://via.placeholder.com/400x400?text=No+Image'">
+  </div>
+
+  <!-- Информация о товаре -->
+  <div class="col-md-4">
+    <h2 class="mb-2">{{ name }}</h2>
+
+    <!-- ⭐ Рейтинг -->
+    <div class="d-flex align-items-center mb-3">
+      {% set rating = 4.2 %}
+      {% set reviews = 125 %}
+
+      <!-- Звёздочки -->
+      <div>
+        {% for i in range(1,6) %}
+          {% if i <= rating|round(0, 'floor') %}
+            <span style="color:#ffa41c;">★</span>
+          {% elif i - rating < 1 %}
+            <span style="color:#ffa41c;">☆</span>
+          {% else %}
+            <span style="color:#ccc;">☆</span>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- Количество отзывов -->
+      <span class="ms-2 text-primary" style="cursor:pointer;">
+        {{ reviews }} ratings
+      </span>
+    </div>
+
+    <!-- Описание -->
+    {% if description %}
+      <p class="text-muted">{{ description|string|truncate(300) }}</p>
+    {% else %}
+      <p class="text-muted">No description available.</p>
+    {% endif %}
+
+    <!-- Цена -->
+    <div class="my-4">
+      {% if price and price != 'N/A' %}
+        <span class="h4 text-danger">Price: {{ price }}</span>
+      {% else %}
+        <span class="text-muted">Price not available</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Блок покупки -->
+  <div class="col-md-3">
+    <div class="border p-3 rounded bg-white shadow-sm">
+      {% if price and price != 'N/A' %}
+        <p class="h5 text-success mb-3">In Stock</p>
+        <p class="mb-3">
+          <span class="fw-bold">Price:</span>
+          <span class="text-danger">{{ price }}</span>
+        </p>
+      {% endif %}
+
+      <a href="{{ url_for('add_to_cart', dataset=dataset, product_id=product_id) }}"
+         class="btn btn-amazon w-100 mb-2">
+        Add to Cart
+      </a>
+      <a href="#"
+         class="btn w-100 mb-2"
+         style="background-color:#ffa41c; border-color:#ff8f00; color:#111; font-weight:600;">
+        Buy Now
+      </a>
+
+      <small class="text-muted">Secure transaction</small>
+    </div>
+  </div>
+</div>
+
+<!-- Рекомендации -->
+<h3 class="mt-5">Recommended Products</h3>
+<div class="row g-3">
+  {% if recommendations %}
+    {% for rec in recommendations %}
+      <div class="col-md-3">
+        {% set rec_dataset = dataset.lower() %}
+        {% set rec_id = rec['product_id'] %}
+        <a href="{{ url_for('product_page_' + rec_dataset, product_id=rec_id) }}"
+           class="text-decoration-none text-dark">
+          <div class="card product-card shadow-sm">
+            <img src="{{ rec.get('img_link', rec.get('imgurl', 'https://via.placeholder.com/220x220?text=No+Image')) }}"
+                 alt="{{ rec.get('product_name', rec.get('title', 'Product')) }}"
+                 class="card-img-top product-img"
+                 onerror="this.src='https://via.placeholder.com/220x220?text=No+Image'">
+            <div class="card-body text-center">
+              <h6 class="card-title">{{ rec.get('product_name', rec.get('title', 'Product'))|truncate(50) }}</h6>
+              {% if 'similarity_score' in rec %}
+                <p class="text-muted small">
+                  Similarity: {{ '%0.2f'|format(rec['similarity_score'] * 100) }}%
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="col-12">
+      <p class="text-muted">No recommendations available.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

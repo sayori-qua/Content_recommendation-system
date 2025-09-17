@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Поисковая строка -->
+  <div class="text-center mb-4">
+    <form action="{{ url_for('search') }}" method="GET" class="d-flex justify-content-center">
+      <input type="text" name="query" placeholder="Search products..."
+             required class="form-control me-2 shadow-sm" style="max-width: 500px; border-radius: 25px;">
+      <button type="submit" class="btn btn-amazon px-4">Search</button>
+    </form>
+  </div>
+
+  <!-- Рекламный баннер -->
+  <div class="mb-5">
+    <div class="card border-0 shadow-sm">
+      <img src="https://via.placeholder.com/1200x300?text=Big+Sale+Today+-+Up+to+50%25+OFF"
+           class="card-img-top rounded" alt="Promo Banner">
+    </div>
+  </div>
+
+  <!-- Популярные категории -->
+  <h3 class="mb-4">Shop by Category</h3>
+  <div class="row g-3">
+    {% for display_name in electro_display_categories.keys() %}
+      <div class="col-md-3">
+        <a href="{{ url_for('category_electro', prefix=display_name) }}" class="text-decoration-none text-dark">
+          <div class="card shadow-sm product-card text-center p-3">
+            <h6 class="fw-bold">{{ display_name }}</h6>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+    {% for category in uk_display_categories %}
+      <div class="col-md-3">
+        <a href="{{ url_for('category_uk', prefix=category) }}" class="text-decoration-none text-dark">
+          <div class="card shadow-sm product-card text-center p-3">
+            <h6 class="fw-bold">{{ category }}</h6>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

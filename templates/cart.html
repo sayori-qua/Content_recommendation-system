@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Shopping Cart{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Shopping Cart</h1>
+
+{% if cart %}
+<div class="row">
+  <!-- Таблица с товарами -->
+  <div class="col-md-8">
+    <table class="table align-middle shadow-sm bg-white">
+      <thead class="table-light">
+        <tr>
+          <th style="width: 80px;">Image</th>
+          <th>Name</th>
+          <th style="width: 120px;">Price</th>
+          <th style="width: 100px;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart %}
+        <tr>
+          <td><img src="{{ item.image }}" width="60" alt="{{ item.name }}" class="rounded border"></td>
+          <td>{{ item.name }}</td>
+          <td class="fw-bold text-danger">
+            {% if item.price and item.price != 'N/A' %}
+              {{ item.price }}
+            {% else %}
+              Price not available
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{ url_for('remove_from_cart', index=loop.index0) }}" class="btn btn-sm btn-outline-danger">
+              Remove
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary mt-3">← Continue Shopping</a>
+  </div>
+
+  <!-- Блок итогов -->
+  <div class="col-md-4">
+    <div class="border rounded p-3 shadow-sm bg-white">
+      <h5>Order Summary</h5>
+      <p><strong>Total items:</strong> {{ cart|length }}</p>
+      <p class="h5"><strong>Total price:</strong> £{{ "%.2f"|format(total) }}</p>
+      <a href="#" class="btn btn-amazon w-100 mb-2">Proceed to Checkout</a>
+    </div>
+  </div>
+</div>
+{% else %}
+<p class="text-muted">Your cart is empty.</p>
+<a href="{{ url_for('index') }}" class="btn btn-primary">Back to Home</a>
+{% endif %}
+{% endblock %}
