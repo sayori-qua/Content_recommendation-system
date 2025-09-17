@@ -59,24 +59,12 @@ Check directory graphics
 The entire application is containerized using Docker for easy deployment and scalability. The multi-container architecture includes the web application, PostgreSQL databases, and Elasticsearch search engine.
 
 ### Docker Setup
+```bash
 # Clone the repository
 git clone your-repo-url
-'''bash
 cd your-project-directory
-'''
+
 # Build and start all services
-'''bash
 docker-compose up -d
-'''
-Access the application at http://localhost:5000
 
-## Getting Started
-```bash
-# Install dependencies
-pip install -r requirements.txt
-```
-# Run EDA analysis
-python eda/first_amazon_dataset.py
-
-# Start web application
-python app.py
+# Access the application at http://localhost:5000
