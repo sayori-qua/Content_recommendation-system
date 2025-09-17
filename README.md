@@ -53,11 +53,8 @@
 - Real-time data visualization
 
 ## Sample Visualizations
-![Mean Price by Category](graphics/mean_price.png)
-*Average pricing across top electronics categories*
+Check directory graphics
 
-![Review Distribution](graphics/Mean_quantity.png)
-*Review volume analysis by product type*
 ## Docker Deployment
 The entire application is containerized using Docker for easy deployment and scalability. The multi-container architecture includes the web application, PostgreSQL databases, and Elasticsearch search engine.
 
