@@ -68,3 +68,19 @@ cd your-project-directory
 docker-compose up -d
 
 # Access the application at http://localhost:5000
+```
+
+## Application Screenshots
+### Home Page
+![Home Page](screenshots/home.png)
+
+### Product Page
+![Product Page](screenshots/item.png)
+
+### Search Page
+![Search Page](screenshots/search.png)
+
+### Shopping Cart
+![Shopping Cart](screenshots/cart.png)
+
+
