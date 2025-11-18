@@ -12,7 +12,6 @@ os.makedirs(dataset_dir, exist_ok=True)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 path = kagglehub.dataset_download("asaniczka/amazon-uk-products-dataset-2023")
-model = SentenceTransformer('all-mpnet-base-v2')
 
 for filename in os.listdir(path):
     full_file_name = os.path.join(path, filename)
@@ -42,7 +41,7 @@ target_lower = [cat.lower() for cat in target_categories]
 mask = df_uk['categoryName'].str.lower().apply(lambda x: any(x.startswith(prefix) for prefix in target_lower))
 
 df_uk = df_uk[mask].copy()
-MAX_PER_CATEGORY = 60
+MAX_PER_CATEGORY = 60 #максимальное количество товаров для категории
 
 def take_first_n(group):
     return group.head(MAX_PER_CATEGORY)
@@ -51,7 +50,7 @@ df_uk = df_uk.groupby('categoryName', group_keys=False).apply(take_first_n)
 df_uk.reset_index(drop=True, inplace=True)
 
 df_uk = df_uk.drop_duplicates()
-category_counts = df_uk['categoryName'].value_counts()
+category_counts = df_uk['categoryName'].value_counts() #товары по категориям
 df_uk = df_uk.reset_index(drop=True)
 print(category_counts)
 

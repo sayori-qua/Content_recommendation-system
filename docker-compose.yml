@@ -3,14 +3,14 @@ services:
     build: .
     ports:
       - "5000:5000"
-    depends_on:
+    depends_on: #запускаем recommender-app только когда др сервисы здоровы
       elasticsearch:
         condition: service_healthy
       db1:
         condition: service_healthy
       db2:
         condition: service_healthy
-    environment:
+    environment: #задаем переменные окружения внутри контейнера
       - ELASTICSEARCH_HOST=http://elasticsearch:9200
     networks:
       - recommender-net
@@ -40,18 +40,20 @@ services:
     container_name: postgres1
     environment:
       POSTGRES_DB: electronics_amazon
-      POSTGRES_USER: sayori_qua
-      POSTGRES_PASSWORD: sayori_qua78
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - .env
     ports:
       - "5433:5432" # на хосте: 5433 в контейнере: 5432
-    volumes:
+    volumes: #тома
       - pgdata1:/var/lib/postgresql/data
       - ./init_electronics.sql:/docker-entrypoint-initdb.d/init_electronics_data.sql
       - ./dataset/amazon.csv:/docker-entrypoint-initdb.d/amazon.csv
     networks:
       - recommender-net
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U sayori_qua -d electronics_amazon" ]
+      test: ["CMD-SHELL", "pg_isready -U sayori_qua -d electronics_amazon"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -62,8 +64,10 @@ services:
     container_name: postgres2
     environment:
       POSTGRES_DB: uk_amazon
-      POSTGRES_USER: sayori_qua
-      POSTGRES_PASSWORD: sayori_qua78
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - .env
     ports:
       - "5434:5432"
     volumes:
@@ -79,9 +83,9 @@ services:
       retries: 10
       start_period: 15s
     restart: unless-stopped
-#нужна одна сеть чтобы использовать контейнер с elastic search в приложении
+#нужна одна сеть, чтобы использовать контейнер с elastic search в приложении
 #сохранение данных вне контейнера
-volumes:
+volumes: #объявляем тома
   esdata:
   pgdata1:
   pgdata2:

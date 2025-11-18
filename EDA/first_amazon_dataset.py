@@ -13,7 +13,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 
 path = kagglehub.dataset_download("karkavelrajaj/amazon-sales-dataset")
-model = SentenceTransformer('all-mpnet-base-v2')
 
 for filename in os.listdir(path):
     full_file_name = os.path.join(path, filename)

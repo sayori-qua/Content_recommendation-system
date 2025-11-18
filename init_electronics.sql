@@ -18,4 +18,3 @@ CREATE TABLE IF NOT EXISTS electro_products (
 );
 
 COPY electro_products FROM '/docker-entrypoint-initdb.d/amazon.csv' DELIMITER ',' CSV HEADER;
-

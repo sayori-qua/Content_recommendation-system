@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-engine = create_engine('')
+engine = create_engine('postgresql://sayori_qua:sayori_qua78@db2:5432/uk_amazon') #создаем подключение
 model = SentenceTransformer('all-mpnet-base-v2')
 
 def url_points_to_image(url): #проверяем картинки на наличие
@@ -36,8 +36,9 @@ print(df_uk['categoryname'].unique())
 
 target_categories = ['Lighting', 'Smart Speakers', 'Cameras', 'Torches', 'Coffee & Espresso Machines',
                      'Car & Motorbike', 'Smartwatches', 'Binoculars, Telescopes & Optics', 'Clocks', 'GPS, Finders & Accessories',
-                     'Hi-Fi Receivers & Separates', 'Telephones, VoIP & Accessories']
+                     'Hi-Fi Receivers & Separates', 'Telephones, VoIP & Accessories'] #нужные нам категории
 target_lower = [cat.lower() for cat in target_categories]
+
 mask = df_uk['categoryname'].str.lower().apply(lambda x: any(x.startswith(prefix) for prefix in target_lower))
 
 df_uk = df_uk[mask].copy()

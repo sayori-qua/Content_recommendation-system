@@ -11,7 +11,7 @@ from sqlalchemy import create_engine
 from models.model_loader import model
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-engine = create_engine('')
+engine = create_engine('postgresql://sayori_qua:sayori_qua78@db1:5432/electronics_amazon')
 
 def url_points_to_image(url):
     try:
@@ -79,6 +79,9 @@ df_exploded['combined_features'] = (
 sentences = df_exploded['combined_features'].tolist()
 embeddings = model.encode(sentences, show_progress_bar=True, convert_to_tensor=False)
 cosine_sim = cosine_similarity(embeddings, embeddings) #косинусное сходство
+
+sampled_df = df_exploded.iloc[:1000].copy()
+sampled_df.reset_index(drop=True, inplace=True)
 
 final_df_exploded = df_exploded.copy()
 
