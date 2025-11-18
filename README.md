@@ -72,15 +72,15 @@ docker-compose up -d
 
 ## Application Screenshots
 ### Home Page
-![Home Page](screenshots/home.png)
+![Home Page](screenshots2/home.png)
 
 ### Product Page
-![Product Page](screenshots/item.png)
+![Product Page](screenshots2/item.png)
 
 ### Search Page
-![Search Page](screenshots/search.png)
+![Search Page](screenshots2/search.png)
 
 ### Shopping Cart
-![Shopping Cart](screenshots/cart.png)
+![Shopping Cart](screenshots2/cart.png)
 
 
